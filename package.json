@@ -43,7 +43,7 @@
     "cesium-navigation"
   ],
   "license": "ISC",
-  "main": "viewerCesiumNavigationMixin.js",
+  "main": "index.js",
   "name": "cesium-navigation-es6",
   "repository": {
     "type": "git",

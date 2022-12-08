@@ -1,17 +1,20 @@
 const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
 	mode: 'production',
 	entry: {
-		CesiumNavigation: path.resolve(__dirname,'./viewerCesiumNavigationMixin.js')
+		CesiumNavigation: path.resolve(__dirname, './viewerCesiumNavigationMixin.js'),
 	},
 	output: {
-		filename: "[name].min.js",
+		publicPath: './',
+		filename: '[name].min.js',
 		library: {
-			name: "[name]",
-			type: "var",
+			name: '[name]',
+			type: 'umd',
+			export: 'default',
 		},
-		scriptType: 'text/javascript'
+		scriptType: 'text/javascript',
 	},
 	optimization: {
 		concatenateModules: true,
@@ -19,40 +22,42 @@ module.exports = {
 		splitChunks: {
 			cacheGroups: {
 				vendors: {
+					// test: /[\\/]mode_modules[\\/]/,
 					test: /.*/,
 					name: 'CesiumNavigation',
-					chunks: 'all'
-				}
-			}
-		}
+					chunks: 'all',
+				},
+			},
+		},
+		removeEmptyChunks: true,
 	},
 	devtool: false,
-	plugins: [new NodePolyfillPlugin()],
+	resolve: {
+		extensions: ['.js', 'cjs', '.css'],
+		fallback: {
+			'http': false,
+			'zlib': false,
+			'https': false,
+		},
+	},
+	plugins: [new MiniCssExtractPlugin()],
+	// plugins: [new NodePolyfillPlugin(), new MiniCssExtractPlugin()],
 	module: {
 		rules: [
 			{
 				test: /\.m?js$/,
 				exclude: /node_modules/,
 				use: {
-					loader: "babel-loader",
+					loader: 'babel-loader',
 					options: {
-						presets: ['@babel/preset-env']
-					}
-				}
-			},
-			{
-				test: /\.less$/i,
-				use: [
-					// compiles Less to CSS
-					"style-loader",
-					"css-loader",
-					"less-loader",
-				],
+						presets: ['@babel/preset-env'],
+					},
+				},
 			},
 			{
 				test: /\.css$/i,
-				use: ["style-loader","css-loader"],
+				use: [MiniCssExtractPlugin.loader, 'css-loader'],
 			},
-		]
-	}
-}
+		],
+	},
+};

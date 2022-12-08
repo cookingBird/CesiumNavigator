@@ -78,11 +78,11 @@ ResetViewNavigationControl.prototype.resetView = function () {
   } else {
     // reset to a default position or view defined in the options
     if (this.terria.options.defaultResetView) {
-      if (this.terria.options.defaultResetView && this.terria.options.defaultResetView instanceof Cartographic) {
+      if (this.terria.options.defaultResetView && this.terria.options.defaultResetView instanceof Cesium.Cartographic) {
         camera.flyTo({
           destination: scene.globe.ellipsoid.cartographicToCartesian(this.terria.options.defaultResetView)
         })
-      } else if (this.terria.options.defaultResetView && this.terria.options.defaultResetView instanceof Rectangle) {
+      } else if (this.terria.options.defaultResetView && this.terria.options.defaultResetView instanceof Cesium.Rectangle) {
         try {
           Rectangle.validate(this.terria.options.defaultResetView)
           camera.flyTo({

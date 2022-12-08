@@ -1,51 +1,64 @@
 const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
 	mode: 'development',
+	// devtools: 'none',
 	entry: {
-		CesiumNavigation: path.resolve(__dirname,'./viewerCesiumNavigationMixin.js')
+		CesiumNavigation: path.resolve(__dirname, './viewerCesiumNavigationMixin.js'),
 	},
 	output: {
-		filename: "[name].js",
+		publicPath: './',
+		path: path.resolve(__dirname, './Build'),
+		filename: '[name].js',
 		library: {
-			name: "[name]",
-			type: "var",
+			name: '[name]',
+			type: 'umd',
+			export: 'default',
 		},
-		// chunkFilename: '',
+		// globalObject: 'window',//default 'self'
+		scriptType: 'text/javascript',
 	},
 	optimization: {
 		concatenateModules: true,
-		// minimize: true,
 		splitChunks: {
 			cacheGroups: {
 				vendors: {
+					// test: /[\\/]mode_modules[\\/]/,
 					test: /.*/,
 					name: 'CesiumNavigation',
-					chunks: 'all'
-				}
-			}
-		}
+					chunks: 'all',
+				},
+			},
+		},
 	},
-	devtool: true,
-	plugins: [new NodePolyfillPlugin(),new MiniCssExtractPlugin()],
+	// plugins: [new NodePolyfillPlugin(), new MiniCssExtractPlugin()],
+	plugins: [new MiniCssExtractPlugin()],
+	resolve: {
+		extensions: ['.js', 'cjs', '.css'],
+		fallback: {
+			'http': false,
+			'zlib': false,
+			'https': false,
+		},
+	},
 	module: {
 		rules: [
 			{
 				test: /\.css$/i,
-				use: [MiniCssExtractPlugin.loader,"css-loader"],
+				use: [MiniCssExtractPlugin.loader, 'css-loader'],
 			},
 			{
 				test: /\.m?js$/,
 				exclude: /node_modules/,
 				use: {
-					loader: "babel-loader",
+					loader: 'babel-loader',
 					options: {
-						presets: ['@babel/preset-env']
-					}
-				}
+						presets: ['@babel/preset-env'],
+					},
+				},
 			},
-		]
+		],
 	},
-}
+};
